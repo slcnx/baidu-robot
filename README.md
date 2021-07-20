@@ -33,6 +33,10 @@ account: # 账号相关
       #- url: 127.0.0.1:5701 # 地址
       #  secret: ''          # 密钥
 ```
+编辑test-v2.py文件，替换所有 `http://192.168.1.222:5700` 为docker宿主机映射的地址。
+```bash
++ proxypool_url = 'http://192.168.1.237:5555/random'  # 替换成proxypool运行的地址
+```
 
 ## 启动go-cqhttp
 ```bash
@@ -48,5 +52,8 @@ docker logs -f qq
 ```bash
 bash  start-qq-agent.sh
 ```
+
+## 启动proxypool
+https://github.com/Python3WebSpider/ProxyPool/tree/1de4f95d3ac8b7fc1657f8e4fd127b263709be0a#docker-%E8%BF%90%E8%A1%8C
 
 请勿非法使用，仅供学习交流！
