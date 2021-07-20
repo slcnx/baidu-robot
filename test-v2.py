@@ -63,6 +63,15 @@ user_agent_list = [
         "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 "
         "(KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24"
 ]
+
+proxypool_url = 'http://192.168.1.237:5555/random'
+def get_random_proxy():
+    """
+    get random proxy from proxypool
+    :return: proxy
+    """
+    return requests.get(proxypool_url).text.strip()
+
 def get_baidu_result(data,KEYWORD,parent_name):
     while True:
         print('threading running requesting. {} get_baidu_result'.format(parent_name))
@@ -77,8 +86,9 @@ def get_baidu_result(data,KEYWORD,parent_name):
           'Accept-Encoding': 'gzip, deflate, br',
           'Accept-Language': 'zh-CN,zh;q=0.9'
         }
-      
-        response = requests.request("GET", BASE_URL + KEYWORD , headers=headers)
+        
+        proxies = {'http': 'http://' + get_random_proxy()}
+        response = requests.request("GET", BASE_URL + KEYWORD , headers=headers,proxies=proxies)
         root = etree.HTML(response.text)
         response.close()
         items = root.xpath('//div[contains(@class,"c-container")]/h3/a/@href')

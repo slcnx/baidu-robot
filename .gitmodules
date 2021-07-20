@@ -2,3 +2,7 @@
 	path = go-cqhttp
 	url = https://github.com/Mrs4s/go-cqhttp.git
 	branch = master
+[submodule "proxypool"]
+	path = proxypool
+	url = https://github.com/Python3WebSpider/ProxyPool
+	branch = master
