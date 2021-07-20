@@ -137,28 +137,23 @@ def handler(data,anser_questions,config: Config, send_timeout, group_timeout):
         print('{} {} 消息长度小于6个字符'.format(threading.current_thread().name,data['message']))
         lock.release()
         return
+
     if regex.search(data['message']) or regex2.search(data['message']):
         old_time = anser_questions.get(data['group_id'])
         if not old_time:
+            anser_questions[data['group_id']] = CURRENT_DATETIME
+            old_time = CURRENT_DATETIME
+
+        if (CURRENT_DATETIME - old_time).seconds >= group_timeout:
+            print('{} {}  send message'.format(threading.current_thread().name, Config.ACTION_PUT, old_time))
+            print(threading.current_thread().name,'anser_questions', anser_questions,'---------------------------------')
+            anser_questions[data['group_id']] = CURRENT_DATETIME
             Config.ACTION_PUT=CURRENT_DATETIME
             print(threading.current_thread().name,'更新的结果.',Config.ACTION_PUT)
-            print('{} {} first send'.format(threading.current_thread().name, Config.ACTION_PUT, old_time))
-            print(threading.current_thread().name,'anser_questions', anser_questions,'---------------------------------')
-            print(threading.current_thread().name,"oldtime not exists")
-            anser_questions[data['group_id']] = CURRENT_DATETIME
+            print('{}  send, and 当前时间比过去时间 {} - {} > {}s'.format(threading.current_thread().name,  CURRENT_DATETIME,old_time,group_timeout))
             threading.Thread(target=get_baidu_result,args=(data,data['message'],threading.current_thread().name)).start()
         else:
-            print('{} {} second send'.format(threading.current_thread().name, Config.ACTION_PUT, old_time))
-            print(threading.current_thread().name,'anser_questions', anser_questions,'---------------------------------')
-            print( (CURRENT_DATETIME - old_time).seconds, 'old_time')
-            if (CURRENT_DATETIME - old_time).seconds >= group_timeout:
-                Config.ACTION_PUT=CURRENT_DATETIME
-                print(threading.current_thread().name,'更新的结果.',Config.ACTION_PUT)
-                print('{}  send, and 当前时间比过去时间 {} - {} > {}s'.format(threading.current_thread().name,  CURRENT_DATETIME,old_time,group_timeout))
-                anser_questions[data['group_id']] = None
-                threading.Thread(target=get_baidu_result,args=(data,data['message'],threading.current_thread().name)).start()
-            else:
-                print('{}   don\'t send, and 当前时间比过去时间 {} - {} < {}s'.format(threading.current_thread().name,  CURRENT_DATETIME,old_time,group_timeout))
+            print('{}   don\'t send, and 当前时间比过去时间 {} - {} < {}s'.format(threading.current_thread().name,  CURRENT_DATETIME,old_time,group_timeout))
 
     lock.release()
 # [b'POST / HTTP/1.1', b'Host: 192.168.1.222:9000', b'User-Agent: CQHttp/4.15.0', b'Content-Length: 399', b'Content-Type: application/json', b'X-Self-Id: 1062670898', b'Accept-Encoding: gzip', b'', b'{"interval":5000,"meta_event_type":"heartbeat","post_type":"meta_event","self_id":1062670898,"status":{"app_enabled":true,"app_good":true,"app_initialized":true,"good":true,"online":true,"plugins_good":null,"stat":{"packet_received":961,"packet_sent":686,"packet_lost":0,"message_received":243,"message_sent":0,"disconnect_times":0,"lost_times":0,"last_message_time":1626664808}},"time":1626664815}\n']
