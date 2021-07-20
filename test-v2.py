@@ -75,20 +75,25 @@ def get_random_proxy():
 def get_baidu_result(data,KEYWORD,parent_name):
     while True:
         print('threading running requesting. {} get_baidu_result'.format(parent_name))
-        BASE_URL = "https://www.baidu.com/s?wd="
+        BASE_URL = "https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&ch=2&tn=98010089_dg&bar=&wd={}&rn=&fenlei=256&oq=&rsv_pq=e3ae9ec2000df3da&rsv_t=6aefR%2BqknUZFEmBz%2FFFl6y0%2BxNTX9C1h3Q5CB%2F0BnweLgeAP3KY7L7VhYt7jo93LVZY&rqlang=cn&rsv_enter=1&rsv_btype=i&rsv_dl=ib&inputT=12593"
+
         headers = {
           'Connection': 'keep-alive',
           'Pragma': 'no-cache',
           'Cache-Control': 'no-cache',
           'Upgrade-Insecure-Requests': '1',
+          'DNT': '1',
           'User-Agent': random.choice(user_agent_list),
           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+          'Referer': 'https://www.baidu.com/?tn=98010089_dg&ch=2',
           'Accept-Encoding': 'gzip, deflate, br',
-          'Accept-Language': 'zh-CN,zh;q=0.9'
+          'Accept-Language': 'zh-CN,zh;q=0.9',
+          # 'Cookie': 'delPer=0; BD_CK_SAM=1; PSINO=2; BIDUPSID=1347521F0C74BAEEEF9F37D36678F78B; PSTM=1626788452; BAIDUID=1347521F0C74BAEE606A2E6A8D9642EC:FG=1; H_PS_PSSID=34268_34099_33966_34222_33848_34072_34280_34106_26350; BDSVRTM=16'
         }
-        
+
         proxies = {'http': 'http://' + get_random_proxy()}
-        response = requests.request("GET", BASE_URL + KEYWORD , headers=headers,proxies=proxies)
+        response = requests.get(BASE_URL.format(KEYWORD) , headers=headers,proxies=proxies)
+
         root = etree.HTML(response.text)
         response.close()
         items = root.xpath('//div[contains(@class,"c-container")]/h3/a/@href')
