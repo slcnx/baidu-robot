@@ -1,0 +1,4 @@
+[submodule "go-cqhttp"]
+	path = go-cqhttp
+	url = https://github.com/Mrs4s/go-cqhttp.git
+	branch = master
