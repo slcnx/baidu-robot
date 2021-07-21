@@ -8,7 +8,7 @@ import requests
 from aiohttp import web
 from lxml import etree
 
-regex = re.compile('.{3,100}(吗|吧|啊|呢|还是|是什么| 是不是).*$')
+regex = re.compile('.{3,100}(吗|吧|啊|呢|还是|是什么|是不是).*$')
 regex2 = re.compile('.{5,100}？$')
 anser_questions = {}
 
@@ -91,7 +91,7 @@ def get_random_proxy():
 def get_baidu_result(data,parent_threadname):
     while True:
         print('threading running requesting. {} get_baidu_result'.format(parent_threadname))
-        BASE_URL = "https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&ch=2&tn=98010089_dg&bar=&wd={}&rn=&fenlei=256&oq=&rsv_pq=e3ae9ec2000df3da&rsv_t=6aefR%2BqknUZFEmBz%2FFFl6y0%2BxNTX9C1h3Q5CB%2F0BnweLgeAP3KY7L7VhYt7jo93LVZY&rqlang=cn&rsv_enter=1&rsv_btype=i&rsv_dl=ib&inputT=12593"
+        BASE_URL = "https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&ch=2&bar=&wd={}"
 
         headers = {
             'Connection': 'keep-alive',
@@ -122,6 +122,7 @@ def get_baidu_result(data,parent_threadname):
                                                                            result=result))
             # 对应群
             send_group_msg(send_gid=data['group_id'], msg=result)
+            send_group_msg(send_gid='611524322', msg=result, gname=data['group_name'], answer=data['message'])
             break
         time.sleep(2)
 
@@ -217,7 +218,7 @@ async def handle(request):
     print()
     print("收到 {group_name}({group_id}) 内 {user_name}({user_id}) 的消息: {message}({message_id})".format(**result))
     print('当前值.', Config.ACTION_PUT)
-    threading.Thread(target=handler, args=(result, anser_questions, Config, 10, 300)).start()
+    threading.Thread(target=handler, args=(result, anser_questions, Config, 10, 1800)).start()
     #   for k,v in data.items():
     #       print(k,v)
     #   print('===========')
