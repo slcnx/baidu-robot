@@ -122,7 +122,6 @@ def get_baidu_result(data,parent_threadname):
                                                                            result=result))
             # 对应群
             send_group_msg(send_gid=data['group_id'], msg=result)
-            send_group_msg(send_gid='611524322', msg=result, gname=data['group_name'], answer=data['message'])
             break
         time.sleep(2)
 
